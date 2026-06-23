@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>毕业前夜 · 时光重启</title>
+  <meta name="description" content="一个可直接部署的校园回忆互动网页小游戏" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+
+  <main id="app" class="app-shell">
+    <section class="hero card" id="screen-start">
+      <p class="eyebrow">互动网页小游戏 · Campus Memory Game</p>
+      <h1>毕业前夜 · 时光重启</h1>
+      <p class="lead">
+        如果给你一次机会，回到大学里最普通的一天，
+        你会先去哪里？见谁？把哪句话认真说完？
+      </p>
+
+      <div class="name-box">
+        <label for="playerName">写下你的游戏名</label>
+        <div class="input-row">
+          <input id="playerName" maxlength="8" placeholder="比如：阿南、Echo、小林" />
+          <button id="startBtn" class="primary">开始重启</button>
+        </div>
+        <small>最多 8 个字。留空会自动叫你“同学”。</small>
+      </div>
+
+      <div class="feature-grid">
+        <div>
+          <strong>6 章剧情</strong>
+          <span>像课程汇报一样完整</span>
+        </div>
+        <div>
+          <strong>4 种互动</strong>
+          <span>选择、点击、配对、填空</span>
+        </div>
+        <div>
+          <strong>结局评分</strong>
+          <span>生成专属毕业签</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="hud card hidden" id="hud">
+      <div>
+        <span id="chapterLabel">第 1 章</span>
+        <strong id="chapterTitle">清晨的闹钟</strong>
+      </div>
+      <div class="progress-wrap" aria-label="游戏进度">
+        <div id="progressBar"></div>
+      </div>
+      <button id="restartBtn" class="ghost">重新开始</button>
+    </section>
+
+    <section id="game" class="game card hidden" aria-live="polite"></section>
+  </main>
+
+  <template id="tpl-chapter1">
+    <div class="chapter">
+      <p class="eyebrow">Chapter 01</p>
+      <h2>清晨的闹钟</h2>
+      <p class="story">
+        你在宿舍床上醒来。窗外是刚亮起来的校园，手机屏幕显示：
+        <b>距离毕业典礼还有 12 小时。</b>
+        你的第一站会去哪？
+      </p>
+      <div class="choice-list">
+        <button class="choice" data-value="library" data-score="12">
+          <span>去图书馆</span>
+          <small>把那本一直没还的书放回原位</small>
+        </button>
+        <button class="choice" data-value="canteen" data-score="10">
+          <span>去食堂</span>
+          <small>再吃一次最熟悉的早餐窗口</small>
+        </button>
+        <button class="choice" data-value="playground" data-score="14">
+          <span>去操场</span>
+          <small>沿着跑道走一圈，看太阳升起</small>
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-chapter2">
+    <div class="chapter">
+      <p class="eyebrow">Chapter 02</p>
+      <h2>时间线里的碎片</h2>
+      <p class="story">点击时间线上的 5 个记忆碎片，把它们放进口袋。</p>
+      <div class="timeline" id="timeline">
+        <button data-memory="第一次社团招新">大一 · 九月</button>
+        <button data-memory="期末周通宵复习">大一 · 十二月</button>
+        <button data-memory="雨天借到一把伞">大二 · 三月</button>
+        <button data-memory="晚风里的操场散步">大二 · 十月</button>
+        <button data-memory="课程展示前的彩排">大三 · 六月</button>
+        <button data-memory="毕业照那天的拥抱">大四 · 五月</button>
+      </div>
+      <div id="memoryPocket" class="pocket">已收集：0 / 5</div>
+      <button id="timelineNext" class="primary hidden">继续下一章</button>
+    </div>
+  </template>
+
+  <template id="tpl-chapter3">
+    <div class="chapter">
+      <p class="eyebrow">Chapter 03</p>
+      <h2>把回忆连回地点</h2>
+      <p class="story">点击两个卡片进行配对。把“回忆”和“地点”放到一起。</p>
+      <div class="match-board" id="matchBoard"></div>
+      <div class="mini-status" id="matchStatus">已配对：0 / 4</div>
+    </div>
+  </template>
+
+  <template id="tpl-chapter4">
+    <div class="chapter">
+      <p class="eyebrow">Chapter 04</p>
+      <h2>没说出口的话</h2>
+      <p class="story">
+        你在教学楼门口停下，想把最后一句话写进毕业留言册。
+        请填入一个 2 到 6 个字的词，作为你的毕业暗号。
+      </p>
+      <div class="fill-card">
+        <span>愿我们</span>
+        <input id="secretWord" maxlength="6" placeholder="如：再见仍热烈" />
+        <span>。</span>
+      </div>
+      <p class="hint">示例：前程明亮、重逢有期、永远年轻、继续闪光。</p>
+      <button id="fillNext" class="primary">写进留言册</button>
+      <p id="fillError" class="error"></p>
+    </div>
+  </template>
+
+  <template id="tpl-chapter5">
+    <div class="chapter">
+      <p class="eyebrow">Chapter 05</p>
+      <h2>毕业前的最后测验</h2>
+      <p class="story">回答 5 道题，看看你会得到哪一种毕业结局。</p>
+      <div id="quizBox" class="quiz-box"></div>
+      <div class="quiz-actions">
+        <button id="quizPrev" class="ghost">上一题</button>
+        <button id="quizNext" class="primary">下一题</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-ending">
+    <div class="chapter ending">
+      <p class="eyebrow">Final Chapter</p>
+      <h2 id="endingTitle">你的毕业签</h2>
+      <p id="endingText" class="story"></p>
+      <div class="score-card">
+        <span>记忆值</span>
+        <strong id="finalScore">88</strong>
+        <em>/ 100</em>
+      </div>
+      <div class="receipt" id="receipt"></div>
+      <div class="ending-actions">
+        <button id="copyBtn" class="primary">复制分享文案</button>
+        <button id="playAgainBtn" class="ghost">再玩一次</button>
+      </div>
+      <p id="copyTip" class="hint"></p>
+    </div>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
